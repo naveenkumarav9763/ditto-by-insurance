@@ -73,7 +73,8 @@ public class BasePage {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return filePath;
+		System.out.println(filePath);
+		return "screenshots/"+fileName;
 	}
 
 	public void addStepValidation(boolean condition, String message) {

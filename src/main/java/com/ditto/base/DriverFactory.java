@@ -22,7 +22,8 @@ public class DriverFactory {
 					chromeOptions.addArguments("--headless=new");
                     chromeOptions.addArguments("--no-sandbox");
                     chromeOptions.addArguments("--disable-dev-shm-usage");
-					chromeOptions.addArguments("--window-size=1920,1080");
+					chromeOptions.addArguments("--window-size=1920,4000");
+					chromeOptions.addArguments("--start-maximized");
 				}
 				driver.set(new ChromeDriver(chromeOptions));
 				break;
@@ -32,7 +33,8 @@ public class DriverFactory {
 					edgeOptions.addArguments("--headless=new");
                     edgeOptions.addArguments("--no-sandbox");
                     edgeOptions.addArguments("--disable-dev-shm-usage");
-					edgeOptions.addArguments("--window-size=1920,1080");
+					edgeOptions.addArguments("--window-size=1920,4000");
+					edgeOptions.addArguments("--start-maximized");
 				}
 				driver.set(new EdgeDriver(edgeOptions));
 				break;
