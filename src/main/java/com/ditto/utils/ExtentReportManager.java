@@ -16,12 +16,12 @@ public class ExtentReportManager {
 
 	public static ExtentReports getInstance() {
 		if (extent == null) {
-			File reportDir = new File("reports");
+			File reportDir = new File("target/reports");
 			if (!reportDir.exists()) {
 				reportDir.mkdirs();
 			}
 			String timeStamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-			reportPath = System.getProperty("user.dir")+"reports/ExtentReport_" + timeStamp + ".html";
+			reportPath = System.getProperty("user.dir")+"target/reports/ExtentReport_" + timeStamp + ".html";
 			ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportPath);
 			sparkReporter.config().setReportName("Ditto Insurance Automation Execution Report");
 			sparkReporter.config().setDocumentTitle("Ditto Insurance Automation Execution Report");
