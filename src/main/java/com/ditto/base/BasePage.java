@@ -61,10 +61,13 @@ public class BasePage {
 	// Screenshot Method
 	public String captureScreenshot(String testName) {
 		File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-		String directory = System.getProperty("user.dir") + "screenshots/";
+		File reportDir = new File("test-output/screenshots");
+			if (!reportDir.exists()) {
+				reportDir.mkdirs();
+			}
+		String directory = "test-output/screenshots/";
 		String filePath = directory + testName + "_" + System.currentTimeMillis() + ".png";
 		try {
-			Files.createDirectories(Paths.get(directory));
 			Files.copy(srcFile.toPath(), Paths.get(filePath));
 		} catch (IOException e) {
 			e.printStackTrace();
