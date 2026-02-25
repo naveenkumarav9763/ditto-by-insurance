@@ -9,8 +9,8 @@ public class PremiumCalculationPage extends BasePage{
 	
 
 
-	private static final By BASE_PREMIUM_AMOUNT = By.xpath("//span[text()='Base Premium']/following-sibling::span[text()]");
-	private static final By TOTAL_PREMIUM_AMOUNT = By.xpath("//span[text()='Total Premium']/following-sibling::span[text()]");
+	private static final By BASE_PREMIUM_AMOUNT = By.xpath("//span[text()='Base Premium']/following-sibling::span");
+	private static final By TOTAL_PREMIUM_AMOUNT = By.xpath("//span[text()='Total Premium']/following-sibling::span");
 	private By ADDONS_CHECKBOX(String addonName) {
 		return By.xpath("//button[contains(@id,'control-addons')]//following-sibling::div//input[@name='"+addonName+"']");
 	}
@@ -22,7 +22,7 @@ public class PremiumCalculationPage extends BasePage{
 		String value = getText(locator).replaceAll("[^0-9.]", "").trim();		
 		return Double.parseDouble(value);
 	}
-	
+
 	private void selectAddon() {
 		String addonName = testData.get("Addon");
 		addStepValidation(isElementPresent(ADDONS_CHECKBOX(addonName), getGlobalTimeOut()), addonName+" Addon displayed in Premium calculation page");
