@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="DittoByInsurance">
+    <listeners>
+        <listener class-name="com.ditto.utils.TestListener"/>
+    </listeners>
+    <test name="PremiumCalculationTests">
+        <classes>
+            <class name="com.ditto.tests.DittoByInsuranceTest"/>
+        </classes>
+    </test>
+</suite>
