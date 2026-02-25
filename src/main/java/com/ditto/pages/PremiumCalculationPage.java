@@ -19,9 +19,10 @@ public class PremiumCalculationPage extends BasePage{
 	}
 	
 	private double getAmount(By locator) {
-		String value = getText(locator).replace("₹", "").replace(",", "").trim();
+		String value = getText(locator).replaceAll("[^0-9.]", "").trim();		
 		return Double.parseDouble(value);
 	}
+	
 	private void selectAddon() {
 		String addonName = testData.get("Addon");
 		addStepValidation(isElementPresent(ADDONS_CHECKBOX(addonName), getGlobalTimeOut()), addonName+" Addon displayed in Premium calculation page");
@@ -33,6 +34,7 @@ public class PremiumCalculationPage extends BasePage{
 	private void validatePremiumWithAddon() {
 		String addonName = testData.get("Addon");
 		ExtentReportManager.getTest().info("Validating premium calculation for addon: " + addonName);
+		waitForVisibility(TOTAL_PREMIUM_AMOUNT);
 		scrollToElement(BASE_PREMIUM_AMOUNT);
 		double basePremium = getAmount(BASE_PREMIUM_AMOUNT);
 		double addonPrice = getAmount(ADDONS_PRICE(addonName));
