@@ -36,43 +36,44 @@ public class BasePage {
 
 	public BasePage() {
 		this.driver = DriverFactory.getDriver();
-        this.property = new PropertyReader();
+		this.property = new PropertyReader();
 
 	}
-	
-	@BeforeMethod
-    public void setUp() {
-        DriverFactory.initDriver(property.getBrowser());
-        driver = DriverFactory.getDriver();
-        driver.get(property.getUrl());
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(getGlobalTimeOut()));
-    }
 
-    @AfterMethod
-    public void tearDown() {
-        DriverFactory.quitDriver();
-    }
-    
+	@BeforeMethod
+	public void setUp() {
+		DriverFactory.initDriver(property.getBrowser());
+		driver = DriverFactory.getDriver();
+		driver.get(property.getUrl());
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(getGlobalTimeOut()));
+	}
+
+	@AfterMethod
+	public void tearDown() {
+		DriverFactory.quitDriver();
+	}
+
 	@BeforeClass
 	public void loadTestData() {
-		testData = ExcelUtil.getTestDataAsHashtable("src/main/resources/excelData/dittoByInsuranceTestData.xlsx", "dittoByInsuranceTestData");
+		testData = ExcelUtil.getTestDataAsHashtable("src/main/resources/excelData/dittoByInsuranceTestData.xlsx",
+				"dittoByInsuranceTestData");
 	}
 
-	// Screenshot Method
 	public String captureScreenshot(String testName) {
 		File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-		File reportDir = new File("test-output/screenshots");
-			if (!reportDir.exists()) {
-				reportDir.mkdirs();
-			}
 		String directory = "test-output/screenshots/";
-		String filePath = directory + testName + "_" + System.currentTimeMillis() + ".png";
+		File reportDir = new File(directory);
+		if (!reportDir.exists()) {
+			reportDir.mkdirs();
+		}
+		String fileName = testName + "_" + System.currentTimeMillis() + ".png";
+		String filePath = directory + fileName;
 		try {
 			Files.copy(srcFile.toPath(), Paths.get(filePath));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return new File(filePath).getAbsolutePath();
+		return "../screenshots/" + fileName;
 	}
 
 	public void addStepValidation(boolean condition, String message) {
@@ -81,12 +82,12 @@ public class BasePage {
 		try {
 			Assert.assertTrue(condition, message);
 			ExtentReportManager.getTest().pass("Validation Passed: " + message, MediaEntityBuilder
-                    .createScreenCaptureFromPath(filePath)
-                    .build());
+					.createScreenCaptureFromPath(filePath)
+					.build());
 		} catch (AssertionError e) {
-			ExtentReportManager.getTest().fail("Validation Failed: " + message,MediaEntityBuilder
-                    .createScreenCaptureFromPath(filePath)
-                    .build());
+			ExtentReportManager.getTest().fail("Validation Failed: " + message, MediaEntityBuilder
+					.createScreenCaptureFromPath(filePath)
+					.build());
 			throw e;
 		}
 	}
@@ -95,6 +96,7 @@ public class BasePage {
 		driver.findElement(locator).click();
 		ExtentReportManager.getTest().info("Clicked on: " + locator.toString());
 	}
+
 	public void clickOnElement(WebElement locator) {
 		locator.click();
 		ExtentReportManager.getTest().info("Clicked on: " + locator.toString());
@@ -112,11 +114,11 @@ public class BasePage {
 		ExtentReportManager.getTest().info("Fetched text: " + text);
 		return text;
 	}
-	
+
 	public int getGlobalTimeOut() {
 		return property.getTimeOut();
 	}
-	
+
 	public WebDriverWait getWait() {
 		return new WebDriverWait(driver, Duration.ofSeconds(property.getTimeOut()));
 	}
@@ -131,7 +133,7 @@ public class BasePage {
 		ExtentReportManager.getTest().info("Fetched attribute '" + attributeName + "' with value: " + attributeValue);
 		return attributeValue;
 	}
-	
+
 	public boolean isElementPresent(By locator, int timeoutInSeconds) {
 		try {
 			boolean status = waitForVisibility(locator).isDisplayed();
@@ -139,12 +141,13 @@ public class BasePage {
 					.info("Element displayed: " + locator + " within " + timeoutInSeconds + " seconds");
 			return status;
 		} catch (NoSuchElementException e) {
-			String errorMessage = "Element NOT displayed: " + locator + " after waiting " + timeoutInSeconds + " seconds";
+			String errorMessage = "Element NOT displayed: " + locator + " after waiting " + timeoutInSeconds
+					+ " seconds";
 			ExtentReportManager.getTest().info(errorMessage);
 			return false;
 		}
 	}
-	
+
 	public boolean isElementEnabled(By locator, int timeoutInSeconds) {
 		try {
 			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds));
@@ -158,7 +161,7 @@ public class BasePage {
 			return false;
 		}
 	}
-	
+
 	public List<WebElement> validateAndReturnList(List<WebElement> elements, String listName) {
 		ExtentReportManager.getTest().info("Validating list: " + listName);
 		if (elements == null || elements.isEmpty()) {
@@ -168,7 +171,7 @@ public class BasePage {
 		ExtentReportManager.getTest().pass("List '" + listName + "' contains " + elements.size() + " elements");
 		return elements;
 	}
-	
+
 	public WebElement findElement(By locator) {
 		try {
 			WebElement element = driver.findElement(locator);
@@ -180,22 +183,21 @@ public class BasePage {
 			throw new NoSuchElementException(errorMessage);
 		}
 	}
-	
-	
+
 	public List<WebElement> findElements(By locator) {
 		List<WebElement> elements = driver.findElements(locator);
 		return elements;
 	}
-	
+
 	public void scrollToElement(By locator) {
 		scrollToElement(findElement(locator));
 	}
-	
+
 	public void scrollToElement(WebElement locator) {
 		int x = locator.getLocation().getX();
 		int y = locator.getLocation().getY();
 		JavascriptExecutor js = (JavascriptExecutor) driver;
-		js.executeScript("window.scrollTo("+x+","+(y-200)+")", new Object[] {""});
+		js.executeScript("window.scrollTo(" + x + "," + (y - 200) + ")", new Object[] { "" });
 	}
 
 	public boolean isCIEnvironment() {
