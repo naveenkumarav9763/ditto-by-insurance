@@ -13,16 +13,8 @@ public class DriverFactory {
 	public DriverFactory() {
 	}
 
-	private static boolean isCIEnvironment() {
-		String envProperty = System.getProperty("env");
-		String ciEnvVariable = System.getenv("CI");
-
-		return "ci".equalsIgnoreCase(envProperty)
-				|| "true".equalsIgnoreCase(ciEnvVariable);
-	}
-
 	public static void initDriver(String browser) {
-		boolean isCI = isCIEnvironment();
+		boolean isCI =  new BasePage().isCIEnvironment();
 		switch (browser.toLowerCase()) {
 			case "chrome":
 				ChromeOptions chromeOptions = new ChromeOptions();

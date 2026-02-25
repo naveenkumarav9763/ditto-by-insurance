@@ -194,4 +194,12 @@ public class BasePage {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("window.scrollTo("+x+","+(y-200)+")", new Object[] {""});
 	}
+
+	public boolean isCIEnvironment() {
+		String envProperty = System.getProperty("env");
+		String ciEnvVariable = System.getenv("CI");
+		return "ci".equalsIgnoreCase(envProperty)
+				|| "true".equalsIgnoreCase(ciEnvVariable);
+	}
+
 }

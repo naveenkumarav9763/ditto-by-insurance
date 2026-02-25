@@ -2,6 +2,7 @@ package com.ditto.utils;
 
 import com.aventstack.extentreports.*;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.ditto.base.BasePage;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ public class ExtentReportManager {
 
 	private static ExtentReports extent;
 	private static ThreadLocal<ExtentTest> test = new ThreadLocal<>();
+	private static String reportPath;
 
 	public static ExtentReports getInstance() {
 		if (extent == null) {
@@ -19,15 +21,20 @@ public class ExtentReportManager {
 				reportDir.mkdirs();
 			}
 			String timeStamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-			String reportPath = "reports/ExtentReport_" + timeStamp + ".html";
+			reportPath = System.getProperty("user.dir")+"reports/ExtentReport_" + timeStamp + ".html";
 			ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportPath);
-			sparkReporter.config().setReportName("Automation Execution Report");
-			sparkReporter.config().setDocumentTitle("Hybrid Framework Report");
+			sparkReporter.config().setReportName("Ditto Insurance Automation Execution Report");
+			sparkReporter.config().setDocumentTitle("Ditto Insurance Automation Execution Report");
 			extent = new ExtentReports();
 			extent.attachReporter(sparkReporter);
 			extent.setSystemInfo("Framework", "Hybrid Framework");
-			extent.setSystemInfo("Tool", "Selenium 4");
-			extent.setSystemInfo("Execution Mode", "Parallel");
+			extent.setSystemInfo("Tool", "Selenium");
+			boolean isCI =  new BasePage().isCIEnvironment();
+			if(isCI){
+				extent.setSystemInfo("Execution Mode", "CI");
+			}else{
+				extent.setSystemInfo("Execution Mode", "Local");
+			}
 			extent.setSystemInfo("Environment", "QA");
 		}
 		return extent;
@@ -45,6 +52,10 @@ public class ExtentReportManager {
 	public static void flushReport() {
 		if (extent != null) {
 			extent.flush();
+			System.out.println("========================================");
+            System.out.println("Extent Report Generated:");
+            System.out.println(reportPath);
+            System.out.println("========================================");
 		}
 	}
 
