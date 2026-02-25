@@ -1,4 +1,4 @@
-name: Selenium Automation CI
+name: Ditto By Insurance Automation CI
 
 on:
   push:
