@@ -61,7 +61,7 @@ public class BasePage {
 	// Screenshot Method
 	public String captureScreenshot(String testName) {
 		File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-		String directory = "screenshots/";
+		String directory =System.getProperty("user.dir") + "screenshots/";
 		String filePath = directory + testName + "_" + System.currentTimeMillis() + ".png";
 		try {
 			Files.createDirectories(Paths.get(directory));
