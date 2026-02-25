@@ -29,7 +29,7 @@ jobs:
 
       # Run TestNG suite
       - name: Run Maven TestNG Suite
-        run: mvn clean test -DsuiteXmlFile=testng.xml -Denv=ci
+        run: mvn clean test -Denv=ci
 
       # Upload Extent Report (even if failed)
       - name: Upload Extent Report
