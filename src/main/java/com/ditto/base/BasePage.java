@@ -78,15 +78,17 @@ public class BasePage {
 
 	public void addStepValidation(boolean condition, String message) {
 		ExtentReportManager.getTest().info("Validating: " + message);
-		String filePath = captureScreenshot(message.replaceAll("[^a-zA-Z0-9]", ""));
+		//String filePath = captureScreenshot(message.replaceAll("[^a-zA-Z0-9]", ""));
+		String filePath = ((TakesScreenshot) driver)
+        .getScreenshotAs(OutputType.BASE64);
 		try {
 			Assert.assertTrue(condition, message);
 			ExtentReportManager.getTest().pass("Validation Passed: " + message, MediaEntityBuilder
-					.createScreenCaptureFromPath(filePath)
+					.createScreenCaptureFromBase64String(filePath)
 					.build());
 		} catch (AssertionError e) {
 			ExtentReportManager.getTest().fail("Validation Failed: " + message, MediaEntityBuilder
-					.createScreenCaptureFromPath(filePath)
+					.createScreenCaptureFromBase64String(filePath)
 					.build());
 			throw e;
 		}
