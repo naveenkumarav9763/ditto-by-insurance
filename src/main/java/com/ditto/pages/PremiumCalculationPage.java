@@ -1,16 +1,13 @@
 package com.ditto.pages;
 
 import org.openqa.selenium.By;
-
 import com.ditto.base.BasePage;
 import com.ditto.utils.ExtentReportManager;
 
 public class PremiumCalculationPage extends BasePage{
 	
-
-
 	private static final By BASE_PREMIUM_AMOUNT = By.xpath("//span[text()='Base Premium']/following-sibling::span");
-	private static final By TOTAL_PREMIUM_AMOUNT = By.xpath("//span[text()='Total Premium']/following-sibling::span");
+	private static final By TOTAL_PREMIUM_AMOUNT = By.xpath("//span[contains(text(),'Total Premium')]/following-sibling::span");
 	private By ADDONS_CHECKBOX(String addonName) {
 		return By.xpath("//button[contains(@id,'control-addons')]//following-sibling::div//input[@name='"+addonName+"']");
 	}
@@ -19,7 +16,7 @@ public class PremiumCalculationPage extends BasePage{
 	}
 	
 	private double getAmount(By locator) {
-		String value = getText(locator).replaceAll("[^0-9.]", "").trim();		
+		String value = getAttribute(locator,"textContent").replaceAll("[^0-9.]", "").trim();		
 		return Double.parseDouble(value);
 	}
 
@@ -34,7 +31,6 @@ public class PremiumCalculationPage extends BasePage{
 	private void validatePremiumWithAddon() {
 		String addonName = testData.get("Addon");
 		ExtentReportManager.getTest().info("Validating premium calculation for addon: " + addonName);
-		waitForVisibility(TOTAL_PREMIUM_AMOUNT);
 		scrollToElement(BASE_PREMIUM_AMOUNT);
 		double basePremium = getAmount(BASE_PREMIUM_AMOUNT);
 		double addonPrice = getAmount(ADDONS_PRICE(addonName));
