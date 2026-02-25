@@ -27,9 +27,10 @@ public class DriverFactory {
 			case "chrome":
 				ChromeOptions chromeOptions = new ChromeOptions();
 				if (isCI) {
-					 chromeOptions.addArguments("--headless=new");
+					chromeOptions.addArguments("--headless=new");
                     chromeOptions.addArguments("--no-sandbox");
                     chromeOptions.addArguments("--disable-dev-shm-usage");
+					chromeOptions.addArguments("--window-size=1920,1080");
 				}
 				driver.set(new ChromeDriver(chromeOptions));
 				break;
@@ -39,6 +40,7 @@ public class DriverFactory {
 					edgeOptions.addArguments("--headless=new");
                     edgeOptions.addArguments("--no-sandbox");
                     edgeOptions.addArguments("--disable-dev-shm-usage");
+					edgeOptions.addArguments("--window-size=1920,1080");
 				}
 				driver.set(new EdgeDriver(edgeOptions));
 				break;
