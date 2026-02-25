@@ -61,7 +61,7 @@ public class BasePage {
 
 	public String captureScreenshot(String testName) {
 		File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-		String directory = "test-output/screenshots/";
+		String directory = "test-output/reports/screenshots/";
 		File reportDir = new File(directory);
 		if (!reportDir.exists()) {
 			reportDir.mkdirs();
