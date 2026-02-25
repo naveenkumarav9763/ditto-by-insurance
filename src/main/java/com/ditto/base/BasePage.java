@@ -61,7 +61,7 @@ public class BasePage {
 	// Screenshot Method
 	public String captureScreenshot(String testName) {
 		File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-		String directory = "screenshots/";
+		String directory = System.getProperty("user.dir") + "screenshots/";
 		String filePath = directory + testName + "_" + System.currentTimeMillis() + ".png";
 		try {
 			Files.createDirectories(Paths.get(directory));
@@ -74,15 +74,15 @@ public class BasePage {
 
 	public void addStepValidation(boolean condition, String message) {
 		ExtentReportManager.getTest().info("Validating: " + message);
-		String base64 = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
+		String filePath = captureScreenshot(message.replaceAll("[^a-zA-Z0-9]", ""));
 		try {
 			Assert.assertTrue(condition, message);
 			ExtentReportManager.getTest().pass("Validation Passed: " + message, MediaEntityBuilder
-                    .createScreenCaptureFromPath(base64)
+                    .createScreenCaptureFromPath(filePath)
                     .build());
 		} catch (AssertionError e) {
 			ExtentReportManager.getTest().fail("Validation Failed: " + message,MediaEntityBuilder
-                    .createScreenCaptureFromPath(base64)
+                    .createScreenCaptureFromPath(filePath)
                     .build());
 			throw e;
 		}
