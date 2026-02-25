@@ -24,7 +24,6 @@ public class ExcelUtil {
 			for (int i = 0; i < cellCount; i++) {
 				String key = formatter.formatCellValue(headerRow.getCell(i));
 				String value = formatter.formatCellValue(valueRow.getCell(i));
-				System.out.println(key + " : " + value);
 				dataTable.put(key, value);
 			}
 		} catch (Exception e) {
