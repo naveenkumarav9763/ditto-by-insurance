@@ -29,7 +29,7 @@ jobs:
 
       # Run TestNG suite
       - name: Run Maven TestNG Suite
-        run: mvn clean test -Dsurefire.suiteXmlFiles=testng.xml
+        run: mvn clean test -Dsurefire.suiteXmlFiles=testng.xml -Denv=CI
 
       # Upload Extent Report (even if failed)
       - name: Upload Extent Report
