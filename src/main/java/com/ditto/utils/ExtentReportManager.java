@@ -28,8 +28,8 @@ public class ExtentReportManager {
 			}
 			String timeStamp = LocalDateTime.now()
 					.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-
-			reportPath = "test-output/reports/ExtentReport_" + timeStamp + ".html";
+			reportPath = System.getProperty("user.dir")+ File.separator + "test-output"+ File.separator + "reports"
+        		+ File.separator + "ExtentReport_" + timeStamp + ".html";			
 			ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportPath);
 			sparkReporter.config().setReportName("Ditto Insurance Automation Execution Report");
 			sparkReporter.config().setDocumentTitle("Ditto Insurance Automation Execution Report");
