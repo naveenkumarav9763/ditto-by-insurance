@@ -10,14 +10,14 @@ import com.ditto.utils.TestListener;
 @Listeners(TestListener.class)
 public class DittoByInsuranceTest extends BasePage{
 	
+	/**
+	 * Executes end-to-end premium calculation flow:
+	 * Product selection → User details → Premium validation.
+	 */
 	@Test
 	public void PremiumCalculationTests() {
-		try {
 		PageFactory.getProductsPage().selectproductAndNavigateToTellUsAboutYouPage();
 		PageFactory.getTellUsAboutYouPage().fillTellUsAboutYouForm();
-		PageFactory.getPremiumCalculationPage().validatePremiumPriceWithAddon();
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
+		PageFactory.getPremiumCalculationPage().validatePremiumPriceWithAddon();	
 	}
 }

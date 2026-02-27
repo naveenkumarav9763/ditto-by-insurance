@@ -28,18 +28,25 @@ import com.ditto.utils.ExcelUtil;
 import com.ditto.utils.ExtentReportManager;
 import com.ditto.utils.PropertyReader;
 
+
 public class BasePage {
 
 	protected WebDriver driver;
 	protected static Hashtable<String, String> testData;
 	private PropertyReader property;
 
+	/**
+	 * Constructor initializes WebDriver and PropertyReader.
+	 */
 	public BasePage() {
 		this.driver = DriverFactory.getDriver();
 		this.property = new PropertyReader();
-
 	}
 
+	/**
+	 * Initializes the WebDriver before each test method.
+	 * Launches browser, navigates to URL, and sets implicit wait.
+	 */
 	@BeforeMethod
 	public void setUp() {
 		DriverFactory.initDriver(property.getBrowser());
@@ -48,17 +55,29 @@ public class BasePage {
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(getGlobalTimeOut()));
 	}
 
+	/**
+	 * Quits the WebDriver instance after each test method.
+	 */
 	@AfterMethod
 	public void tearDown() {
 		DriverFactory.quitDriver();
 	}
 
+	/**
+	 * Loads test data from Excel file before executing test class.
+	 */
 	@BeforeClass
 	public void loadTestData() {
 		testData = ExcelUtil.getTestDataAsHashtable("src/main/resources/excelData/dittoByInsuranceTestData.xlsx",
 				"dittoByInsuranceTestData");
 	}
 
+	/**
+	 * Captures screenshot and stores it under reports directory.
+	 *
+	 * @param testName Name of the test for screenshot file naming.
+	 * @return Relative path of saved screenshot.
+	 */
 	public String captureScreenshot(String testName) {
 		File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 		String directory = "test-output/reports/screenshots/";
@@ -73,36 +92,55 @@ public class BasePage {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(filePath);
-		return "screenshots/"+fileName;
+		return "screenshots/" + fileName;
 	}
 
+	/**
+	 * Validates a condition and logs result with screenshot in Extent Report.
+	 *
+	 * @param condition Validation condition.
+	 * @param message   Validation message.
+	 */
 	public void addStepValidation(boolean condition, String message) {
 		ExtentReportManager.getTest().info("Validating: " + message);
 		String filePath = captureScreenshot(message.replaceAll("[^a-zA-Z0-9]", ""));
 		try {
 			Assert.assertTrue(condition, message);
-			ExtentReportManager.getTest().pass("Validation Passed: " + message, MediaEntityBuilder
-					.createScreenCaptureFromPath(filePath)
-					.build());
+			ExtentReportManager.getTest().pass("Validation Passed: " + message,
+					MediaEntityBuilder.createScreenCaptureFromPath(filePath).build());
 		} catch (AssertionError e) {
-			ExtentReportManager.getTest().fail("Validation Failed: " + message, MediaEntityBuilder
-					.createScreenCaptureFromPath(filePath)
-					.build());
+			ExtentReportManager.getTest().fail("Validation Failed: " + message,
+					MediaEntityBuilder.createScreenCaptureFromPath(filePath).build());
 			throw e;
 		}
 	}
 
+	/**
+	 * Clicks on a web element using locator.
+	 *
+	 * @param locator By locator.
+	 */
 	public void clickOnElement(By locator) {
 		driver.findElement(locator).click();
 		ExtentReportManager.getTest().info("Clicked on: " + locator.toString());
 	}
 
+	/**
+	 * Clicks on a WebElement.
+	 *
+	 * @param locator WebElement instance.
+	 */
 	public void clickOnElement(WebElement locator) {
 		locator.click();
 		ExtentReportManager.getTest().info("Clicked on: " + locator.toString());
 	}
 
+	/**
+	 * Clears existing value and sends new input to element.
+	 *
+	 * @param locator Element locator.
+	 * @param value   Input value.
+	 */
 	public void clearAndSendKeys(By locator, String value) {
 		WebElement element = driver.findElement(locator);
 		element.clear();
@@ -110,24 +148,53 @@ public class BasePage {
 		ExtentReportManager.getTest().info("Entered value: " + value);
 	}
 
+	/**
+	 * Retrieves visible text from element.
+	 *
+	 * @param locator Element locator.
+	 * @return Text value.
+	 */
 	public String getText(By locator) {
 		String text = driver.findElement(locator).getText();
 		ExtentReportManager.getTest().info("Fetched text: " + text);
 		return text;
 	}
 
+	/**
+	 * Returns global timeout value from properties file.
+	 *
+	 * @return Timeout in seconds.
+	 */
 	public int getGlobalTimeOut() {
 		return property.getTimeOut();
 	}
 
+	/**
+	 * Returns WebDriverWait instance.
+	 *
+	 * @return WebDriverWait object.
+	 */
 	public WebDriverWait getWait() {
 		return new WebDriverWait(driver, Duration.ofSeconds(property.getTimeOut()));
 	}
 
+	/**
+	 * Waits until element becomes visible.
+	 *
+	 * @param locator Element locator.
+	 * @return WebElement after visibility.
+	 */
 	public WebElement waitForVisibility(By locator) {
 		return getWait().until(ExpectedConditions.visibilityOfElementLocated(locator));
 	}
 
+	/**
+	 * Retrieves attribute value of element.
+	 *
+	 * @param locator       Element locator.
+	 * @param attributeName Attribute name.
+	 * @return Attribute value.
+	 */
 	public String getAttribute(By locator, String attributeName) {
 		WebElement element = driver.findElement(locator);
 		String attributeValue = element.getAttribute(attributeName);
@@ -135,77 +202,103 @@ public class BasePage {
 		return attributeValue;
 	}
 
+	/**
+	 * Checks if element is present and displayed within timeout.
+	 *
+	 * @param locator          Element locator.
+	 * @param timeoutInSeconds Timeout duration.
+	 * @return true if displayed, else false.
+	 */
 	public boolean isElementPresent(By locator, int timeoutInSeconds) {
 		try {
 			boolean status = waitForVisibility(locator).isDisplayed();
-			ExtentReportManager.getTest()
-					.info("Element displayed: " + locator + " within " + timeoutInSeconds + " seconds");
 			return status;
 		} catch (NoSuchElementException e) {
-			String errorMessage = "Element NOT displayed: " + locator + " after waiting " + timeoutInSeconds
-					+ " seconds";
-			ExtentReportManager.getTest().info(errorMessage);
 			return false;
 		}
 	}
 
+	/**
+	 * Checks if element is enabled and clickable.
+	 *
+	 * @param locator          Element locator.
+	 * @param timeoutInSeconds Timeout duration.
+	 * @return true if enabled, else false.
+	 */
 	public boolean isElementEnabled(By locator, int timeoutInSeconds) {
 		try {
 			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(timeoutInSeconds));
 			WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
-			boolean status = element.isEnabled();
-			ExtentReportManager.getTest().info("Element enabled status for " + locator + " : " + status);
-			return status;
+			return element.isEnabled();
 		} catch (ElementNotInteractableException e) {
-			String errorMessage = "Element not enabled within timeout: " + locator;
-			ExtentReportManager.getTest().fail(errorMessage);
 			return false;
 		}
 	}
 
+	/**
+	 * Validates list is not empty.
+	 *
+	 * @param elements List of elements.
+	 * @param listName Name for reporting.
+	 * @return Validated list.
+	 */
 	public List<WebElement> validateAndReturnList(List<WebElement> elements, String listName) {
-		ExtentReportManager.getTest().info("Validating list: " + listName);
 		if (elements == null || elements.isEmpty()) {
-			ExtentReportManager.getTest().fail("List '" + listName + "' is empty");
 			throw new NoSuchElementException("List '" + listName + "' contains no elements");
 		}
-		ExtentReportManager.getTest().pass("List '" + listName + "' contains " + elements.size() + " elements");
 		return elements;
 	}
 
+	/**
+	 * Finds single element using locator.
+	 *
+	 * @param locator Element locator.
+	 * @return WebElement.
+	 */
 	public WebElement findElement(By locator) {
-		try {
-			WebElement element = driver.findElement(locator);
-			ExtentReportManager.getTest().info("Element found: " + locator);
-			return element;
-		} catch (NoSuchElementException e) {
-			String errorMessage = "Element not found using locator: " + locator;
-			ExtentReportManager.getTest().fail(errorMessage);
-			throw new NoSuchElementException(errorMessage);
-		}
+		return driver.findElement(locator);
 	}
 
+	/**
+	 * Finds multiple elements using locator.
+	 *
+	 * @param locator Element locator.
+	 * @return List of WebElements.
+	 */
 	public List<WebElement> findElements(By locator) {
-		List<WebElement> elements = driver.findElements(locator);
-		return elements;
+		return driver.findElements(locator);
 	}
 
+	/**
+	 * Scrolls to element using locator.
+	 *
+	 * @param locator Element locator.
+	 */
 	public void scrollToElement(By locator) {
 		scrollToElement(findElement(locator));
 	}
 
+	/**
+	 * Scrolls to given WebElement using JavaScript.
+	 *
+	 * @param locator WebElement instance.
+	 */
 	public void scrollToElement(WebElement locator) {
 		int x = locator.getLocation().getX();
 		int y = locator.getLocation().getY();
 		JavascriptExecutor js = (JavascriptExecutor) driver;
-		js.executeScript("window.scrollTo(" + x + "," + (y - 200) + ")", new Object[] { "" });
+		js.executeScript("window.scrollTo(" + x + "," + (y - 200) + ")");
 	}
 
+	/**
+	 * Determines whether execution is running in CI environment.
+	 *
+	 * @return true if CI, otherwise false.
+	 */
 	public boolean isCIEnvironment() {
 		String envProperty = System.getProperty("env");
 		String ciEnvVariable = System.getenv("CI");
 		return "ci".equalsIgnoreCase(envProperty)
 				|| "true".equalsIgnoreCase(ciEnvVariable);
 	}
-
 }

@@ -12,6 +12,7 @@ public class ProductsPage extends BasePage {
 	private By HEALTH_PRODUCT(String productName) {
 		return By.xpath("//span[text()='" + productName + "']");
 	}
+
 	private static final By NEXT_BUTTON = By.xpath("//span[text()='Next']");
 	private static final By ALL_ACCORDIANS = By.xpath("//div[contains(@class,'policyDetailAccordionItem')]");
 	private static final By ALL_ACCORDIANS_NAME = By.xpath(
@@ -19,6 +20,9 @@ public class ProductsPage extends BasePage {
 	private static final By CONTINUE_BUTTON = By.xpath("//span[text()='Continue']");
 	private static final By BENEFITS_HEADER = By.xpath("//h1[contains(text(),'Understand your policy')]");
 
+	/**
+	 * Selects the health insurance product based on ProductName.
+	 */
 	private void selectProduct() {
 		String productName = testData.get("ProductName");
 		addStepValidation(isElementPresent(HEALTH_PRODUCT(productName), getGlobalTimeOut()),
@@ -27,11 +31,20 @@ public class ProductsPage extends BasePage {
 		clickOnElement(HEALTH_PRODUCT(productName));
 	}
 
+	/**
+	 * Validates that the benefits header is visible after product selection.
+	 */
 	private void validateBenefitsHeader() {
 		addStepValidation(isElementPresent(BENEFITS_HEADER, getGlobalTimeOut()),
 				"Navigated Successfully to benefits page after select the product");
 	}
 
+	/**
+	 * Expands a specific accordion unless it is 'MAIN BENEFITS'.
+	 *
+	 * @param accordionLocator the WebElement representing the accordion
+	 * @param accordianName    the name of the accordion
+	 */
 	private void expandAccordion(WebElement accordionLocator, String accordianName) {
 		if (!accordianName.toUpperCase().contains("MAIN BENEFITS")) {
 			scrollToElement(accordionLocator);
@@ -39,6 +52,11 @@ public class ProductsPage extends BasePage {
 		}
 	}
 
+	/**
+	 * Clicks on Next or Continue button based on accordion name.
+	 *
+	 * @param accordianName the name of the accordion
+	 */
 	private void clickOnNextButton(String accordianName) {
 		if (accordianName.toUpperCase().contains("EXTRA BENEFITS")) {
 			clickOnElement(CONTINUE_BUTTON);
@@ -47,6 +65,9 @@ public class ProductsPage extends BasePage {
 		}
 	}
 
+	/**
+	 * Validates and expands all accordions and navigates through them.
+	 */
 	private void validateAccordions() {
 		List<WebElement> accordian = validateAndReturnList(findElements(ALL_ACCORDIANS), "All Accordian");
 		List<WebElement> accordianNames = validateAndReturnList(findElements(ALL_ACCORDIANS_NAME),
@@ -62,6 +83,10 @@ public class ProductsPage extends BasePage {
 		}
 	}
 
+	/**
+	 * Selects a product, validates navigation to benefits page, and completes
+	 * accordion navigation.
+	 */
 	public void selectproductAndNavigateToTellUsAboutYouPage() {
 		selectProduct();
 		validateBenefitsHeader();

@@ -9,6 +9,15 @@ import java.util.Hashtable;
 
 public class ExcelUtil {
 
+	/**
+	 * Reads test data from given Excel sheet and returns it as a key-value
+	 * Hashtable.
+	 * first row contains headers and second row contains values.
+	 *
+	 * @param filePath  path of the Excel file
+	 * @param sheetName name of the sheet
+	 * @return Hashtable containing test data
+	 */
 	public static Hashtable<String, String> getTestDataAsHashtable(String filePath, String sheetName) {
 		Hashtable<String, String> dataTable = new Hashtable<>();
 		FileInputStream fis = null;
@@ -38,7 +47,6 @@ public class ExcelUtil {
 				e.printStackTrace();
 			}
 		}
-
 		return dataTable;
 	}
 }
