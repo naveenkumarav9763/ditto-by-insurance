@@ -1,0 +1,29 @@
+# Maven
+/target/
+/dependency-reduced-pom.xml
+
+# Compiled files
+*.class
+
+# Logs
+*.log
+
+# Test output
+/test-output/
+/reports/
+/screenshots/
+
+# Extent reports
+*.html
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
